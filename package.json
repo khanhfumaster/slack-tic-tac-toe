@@ -1,0 +1,27 @@
+{
+  "name": "slack-tic-tac-toe",
+  "description": "Tic-Tac-Toe App for Slack",
+  "version": "1.0.0",
+  "author": "Khanh Nguyen <khanhplications@gmail.com>",
+  "homepage": "https://github.com/khanh2907/slack-tic-tac-toe",
+  "license": "MIT",
+  "keywords": [
+    "slack",
+    "app",
+    "bot",
+    "aws",
+    "lambda",
+    "dynamo",
+    "serverless"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/khanh2907/slack-tic-tac-toe.git"
+  },
+  "bugs": {
+    "url": "https://github.com/khanh2907/slack-tic-tac-toe/issues"
+  },
+  "dependencies": {
+    "serverless-slack": "^1.0.25"
+  }
+}
