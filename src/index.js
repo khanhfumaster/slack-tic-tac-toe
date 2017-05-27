@@ -110,7 +110,7 @@ function resultAttachment(game, text, color) {
 }
 
 // Slash Command handler
-slack.on('/greet', (msg, bot) => {
+slack.on('/ttt', (msg, bot) => {
   const mention = msg.text.match(/@(\S*)/);
   if (!mention) {
     bot.reply(FAILED_TO_FIND_USER, true);
