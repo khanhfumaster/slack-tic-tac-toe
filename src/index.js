@@ -22,7 +22,7 @@ const DEFEAT_WORDS = [
 ];
 
 function getDefeatWord() {
-  return DEFEAT_WORDS[Math.floor(Math.random()*DEFEAT_WORDS.length)];
+  return DEFEAT_WORDS[Math.floor(Math.random() * DEFEAT_WORDS.length)];
 }
 
 const newGame = [
@@ -109,8 +109,7 @@ function resultAttachment(game, text, color) {
   }
 }
 
-// Slash Command handler
-slack.on('/ttt', (msg, bot) => {
+function playInChannel(msg, bot) {
   const mention = msg.text.match(/@(\S*)/);
   if (!mention) {
     bot.reply(FAILED_TO_FIND_USER, true);
@@ -140,8 +139,27 @@ slack.on('/ttt', (msg, bot) => {
   }).catch(err => {
     bot.reply(FAILED_TO_FIND_USER, true);
   })
-});
+}
 
+function playInDirect(msg, bot) {
+  const player1 = msg.user_name;
+  const player2 = null;
+
+  let message = {
+    attachments: gameToAttachments(newGame, player1, player2)
+  };
+
+  bot.reply(message);
+}
+
+// Slash Command handler
+slack.on('/ttt', (msg, bot) => {
+  if (msg.channel_name === 'directmessage') {
+    playInDirect(msg, bot);
+  } else {
+    playInChannel(msg, bot);
+  }
+});
 
 // Interactive Message handler
 slack.on('ttt_move', (msg, bot) => {
@@ -160,7 +178,9 @@ slack.on('ttt_move', (msg, bot) => {
   }
 
   const player1 = actionData.player1;
-  const player2 = actionData.player2;
+  let player2 = actionData.player2;
+
+  const isDirectGameStart = !player2;
 
   let otherPlayer;
 
@@ -172,12 +192,17 @@ slack.on('ttt_move', (msg, bot) => {
     move = O;
     nextMove = X;
     otherPlayer = player1;
+  } else if (isDirectGameStart) {
+    player2 = actionUser;
+    move = O;
+    nextMove = X;
+    otherPlayer = player1;
   } else {
     console.log('Not a player of the game.');
     return;
   }
 
-  if (move !== actionData.nextTurn) {
+  if (!isDirectGameStart && move !== actionData.nextTurn) {
     console.log('Not their turn.');
     return;
   }
@@ -202,9 +227,12 @@ slack.on('ttt_move', (msg, bot) => {
     };
   } else {
     message = {
-      text: `@${player1} ${X} vs ${O} @${player2}`,
       attachments: gameToAttachments(game, player1, player2, nextMove)
     };
+
+    if (!isDirectGameStart) {
+      message.text = `@${player1} ${X} vs ${O} @${player2}`;
+    }
   }
 
   // public reply
