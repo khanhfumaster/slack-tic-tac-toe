@@ -154,6 +154,17 @@ function playInDirect(msg, bot) {
 
 // Slash Command handler
 slack.on('/ttt', (msg, bot) => {
+  if (/help/.test(msg.text)) {
+    let helpText = `G'day mate! You can play a game of tic-tac-toe with the /ttt slash command!`;
+
+    if (msg.channel_name !== 'directmessage') {
+      helpText += ` If you're in a group chat make sure you @mention the person you want to play with.`;
+    }
+
+    bot.reply(helpText, true);
+    return;
+  }
+
   if (msg.channel_name === 'directmessage') {
     playInDirect(msg, bot);
   } else {
