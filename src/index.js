@@ -213,7 +213,11 @@ slack.on('ttt_move', (msg, bot) => {
     return;
   }
 
-  if (!isDirectGameStart && move !== actionData.nextTurn) {
+  if (isDirectGameStart && !actionData.nextTurn) {
+    actionData.nextTurn = move;
+  }
+
+  if (move !== actionData.nextTurn) {
     console.log('Not their turn.');
     return;
   }
